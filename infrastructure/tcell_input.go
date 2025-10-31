@@ -72,6 +72,8 @@ func (i *TCellInput) eventToAction(ev tcell.Event) _interface.InputAction {
 				return _interface.SoftDrop
 			case 'q', 'Q':
 				return _interface.Quit
+			case 'R', 'r':
+				return _interface.Restart
 			}
 		}
 	}

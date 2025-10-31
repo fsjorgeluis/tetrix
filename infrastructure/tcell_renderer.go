@@ -84,8 +84,8 @@ func (r *TCellRenderer) DrawPiece(board *domain.Board, piece *domain.Piece) {
 
 func (r *TCellRenderer) DrawScore(score, boardWidth int) {
 	label := "SCORE: "
-	x := boardWidth * 3 // starts after the board
-	y := 0              // top-right corner
+	x := boardWidth * 3
+	y := 0
 
 	style := tcell.StyleDefault.Foreground(tcell.ColorGreen)
 	for i, ch := range label {
@@ -95,6 +95,27 @@ func (r *TCellRenderer) DrawScore(score, boardWidth int) {
 	scoreStr := fmt.Sprintf("%d", score)
 	for i, ch := range scoreStr {
 		r.screen.SetContent(x+len(label)+i, y, ch, nil, style)
+	}
+}
+
+func (r *TCellRenderer) DrawLabel(x, y int, text string) {
+	for i, ch := range text {
+		r.Screen().SetContent(x+i, y, ch, nil, tcell.StyleDefault.Foreground(tcell.ColorRed))
+	}
+}
+
+func (r *TCellRenderer) DrawNextPiece(piece *domain.Piece, offsetX, offsetY int) {
+	if piece == nil {
+		return
+	}
+	for dy, row := range piece.Shape {
+		for dx, c := range row {
+			if c == domain.Block {
+				screenX := offsetX + dx
+				screenY := offsetY + dy
+				r.drawBlock(screenX, screenY)
+			}
+		}
 	}
 }
 

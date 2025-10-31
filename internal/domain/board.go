@@ -92,7 +92,15 @@ func (b *Board) CanPlace(p *Piece) bool {
 		if pos.X < 0 || pos.X >= b.Width || pos.Y >= b.Height {
 			return false
 		}
-		if pos.Y >= 0 && !b.IsEmpty(pos.X, pos.Y) {
+		if pos.Y >= 0 && b.Cells[pos.Y][pos.X] != Empty {
+			return false
+		}
+	}
+	for _, pos := range p.OccupiedCells() {
+		if pos.Y < 0 {
+			continue
+		}
+		if b.Cells[pos.Y][pos.X] != Empty {
 			return false
 		}
 	}

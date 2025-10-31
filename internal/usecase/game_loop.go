@@ -12,7 +12,7 @@ func Tick(b *domain.Board, current *domain.Piece) bool {
 	current.Pos = current.Pos.MoveDown()
 	if b.IsCollision(*current) {
 		current.Pos = current.Pos.MoveUp()
-		_ = b.Merge(current)
+		//_ = b.Merge(current)
 		return true
 	}
 	return false
@@ -27,8 +27,8 @@ func Drop(b *domain.Board, current *domain.Piece) {
 		current.Pos = current.Pos.MoveDown()
 		if b.IsCollision(*current) {
 			current.Pos = current.Pos.MoveUp()
-			_ = b.Merge(current)
-			_ = b.ClearFullLines()
+			//_ = b.Merge(current)
+			//_ = b.ClearFullLines()
 			break
 		}
 	}

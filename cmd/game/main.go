@@ -12,9 +12,9 @@ func main() {
 	deps := di.SetupGame()
 	defer deps.Close()
 
-	gameOver := false
+	//gameOver := false
 
-	for !gameOver {
+	for /*!gameOver*/ {
 		select {
 		case <-deps.TickChan:
 			deps.GameService.Tick()
@@ -29,10 +29,14 @@ func main() {
 				deps.GameService.RotateCW()
 			case _interface.SoftDrop:
 				deps.GameService.MoveDown()
+			case _interface.Restart:
+				if deps.GameService.IsGameOver() {
+					deps.GameService.Reset()
+				}
 			case _interface.Quit:
-				gameOver = true
-			case _interface.NoAction:
-				// do nothing
+				return
+				//gameOver = true
+			case _interface.NoAction: // do nothing
 			default:
 				log.Printf("unhandled action: %v", action)
 			}
@@ -41,14 +45,18 @@ func main() {
 		deps.Renderer.Begin(deps.Board, deps.GameService.Score())
 		deps.Renderer.DrawPiece(deps.Board, deps.GameService.CurrentPiece())
 		deps.Renderer.DrawBoard(deps.Board)
+		if deps.GameService.IsGameOver() {
+			deps.Renderer.DrawLabel((deps.Board.Width/2)+1, deps.Board.Height+2, "GAME OVER! Press 'R' to retry")
+		}
+		deps.Renderer.DrawNextPiece(deps.GameService.NextPiece(), deps.Board.Width+2, 2)
 		deps.Renderer.Flush()
 
-		if deps.GameService.IsGameOver() {
-			gameOver = true
-		}
+		//if deps.GameService.IsGameOver() {
+		//	gameOver = true
+		//}
 
 		time.Sleep(10 * time.Millisecond)
 	}
 
-	log.Println("Game Over!")
+	//log.Println("Game Over!")
 }

@@ -11,6 +11,7 @@ const (
 	HardDrop
 	Quit
 	NoAction
+	Restart
 )
 
 type InputHandler interface {
