@@ -16,6 +16,7 @@ const (
 type Board struct {
 	Width, Height int
 	Cells         [][]Cell
+	PlacedPieces  []Piece
 }
 
 // NewBoard creates a board with the given size
@@ -25,9 +26,9 @@ func NewBoard(width, height int) (*Board, error) {
 		return nil, errors.New("invalid board size, width and height must be > 0")
 	}
 	c := make([][]Cell, height)
-	for y := 0; y < height; y++ {
+	for y := range height {
 		c[y] = make([]Cell, width)
-		for x := 0; x < width; x++ {
+		for x := range width {
 			c[y][x] = Empty
 		}
 	}
@@ -35,7 +36,14 @@ func NewBoard(width, height int) (*Board, error) {
 		Width:  width,
 		Height: height,
 		Cells:  c,
+		PlacedPieces: []Piece{},
 	}, nil
+}
+
+// SavePiece saves a new piece in the board, as a placed one
+// so it gets rendered whatsoever every tick.
+func (b *Board) SavePiece(piece Piece) {
+	b.PlacedPieces = append(b.PlacedPieces, piece)
 }
 
 // GetCell returns the rune at (x,y).
@@ -63,7 +71,7 @@ func (b *Board) IsEmpty(x, y int) bool {
 	if x <= 0 || x >= b.Width-1 {
 		return false
 	}
-	if y >= b.Height-1 {
+	if y >= b.Height {
 		return false
 	}
 	if y < 0 {

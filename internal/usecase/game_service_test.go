@@ -1,15 +1,20 @@
 package usecase
 
-
 import (
-	"github.com/fsjorgeluis/tetrix/infrastructure"
 	"testing"
+
+	"github.com/fsjorgeluis/tetrix/infrastructure"
+	"github.com/fsjorgeluis/tetrix/internal/domain"
 )
 
 func TestNewGameService_InitialState(t *testing.T) {
 	spawner := NewDefaultSpawner()
-	sound_player := infrastructure.NewSoundPlayer()
-	game, err := NewGameService(10, 20, spawner, sound_player)
+	soundPlayer := infrastructure.NewSoundPlayer()
+	board, err := domain.NewBoard(10, 10)
+	if err != nil {
+		panic(err)
+	}
+	game, err := NewGameService(board, spawner, soundPlayer)
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}
@@ -20,15 +25,19 @@ func TestNewGameService_InitialState(t *testing.T) {
 	if game.Level() != 1 {
 		t.Errorf("expected level 1 at start, got %d", game.Level())
 	}
-	board := game.GetBoard()
-	if len(board) != 20 || len(board[0]) != 10 {
+	boardState := game.GetBoard()
+	if len(boardState) != 10 || len(boardState[0]) != 10 {
 		t.Errorf("unexpected board size")
 	}
 }
 
 func TestGameService_TickAndSpawn(t *testing.T) {
-	sound_player := infrastructure.NewSoundPlayer()
-	game, _ := NewGameService(10, 20, NewDefaultSpawner(), sound_player)
+	soundPlayer := infrastructure.NewSoundPlayer()
+	board, err := domain.NewBoard(10, 10)
+	if err != nil {
+		panic(err)
+	}
+	game, _ := NewGameService(board, NewDefaultSpawner(), soundPlayer)
 
 	initialBoard := game.GetBoard()
 	game.Tick()
@@ -49,8 +58,12 @@ func TestGameService_TickAndSpawn(t *testing.T) {
 }
 
 func TestGameService_MoveAndDrop(t *testing.T) {
-	sound_player := infrastructure.NewSoundPlayer()
-	game, _ := NewGameService(10, 20, NewDefaultSpawner(), sound_player)
+	soundPlayer := infrastructure.NewSoundPlayer()
+	board, err := domain.NewBoard(10, 10)
+	if err != nil {
+		panic(err)
+	}
+	game, _ := NewGameService(board, NewDefaultSpawner(), soundPlayer)
 
 	game.MoveLeft()
 	game.MoveRight()
