@@ -21,7 +21,7 @@ func NewTCellRenderer() (*TCellRenderer, error) {
 	return &TCellRenderer{screen: s}, nil
 }
 
-func (r *TCellRenderer) RenderBegin(board *domain.Board) {
+func (r *TCellRenderer) Begin(board *domain.Board) {
 	r.Clear()
 
 	width, height := board.Width, board.Height
@@ -45,13 +45,13 @@ func (r *TCellRenderer) RenderBegin(board *domain.Board) {
 	}
 }
 
-func (r *TCellRenderer) RenderBoard(board *domain.Board) {
+func (r *TCellRenderer) DrawBoard(board *domain.Board) {
 	for _, piece := range board.PlacedPieces {
-		r.RenderPiece(board, &piece)
+		r.DrawPiece(board, &piece)
 	}
 }
 
-func (r *TCellRenderer) RenderPiece(board *domain.Board, piece *domain.Piece) {
+func (r *TCellRenderer) DrawPiece(board *domain.Board, piece *domain.Piece) {
 	width, height := board.Width, board.Height
 
 	if piece == nil {
@@ -71,7 +71,7 @@ func (r *TCellRenderer) RenderPiece(board *domain.Board, piece *domain.Piece) {
 	}
 }
 
-func (r *TCellRenderer) RenderEnd() {
+func (r *TCellRenderer) Flush() {
 	r.screen.Show()
 }
 

@@ -38,10 +38,10 @@ func main() {
 			}
 		}
 
-		deps.Renderer.RenderBegin(deps.Board)
-		deps.Renderer.RenderPiece(deps.Board, deps.GameService.CurrentPiece())
-		deps.Renderer.RenderBoard(deps.Board)
-		deps.Renderer.RenderEnd()
+		deps.Renderer.Begin(deps.Board)
+		deps.Renderer.DrawPiece(deps.Board, deps.GameService.CurrentPiece())
+		deps.Renderer.DrawBoard(deps.Board)
+		deps.Renderer.Flush()
 
 		if deps.GameService.IsGameOver() {
 			gameOver = true
