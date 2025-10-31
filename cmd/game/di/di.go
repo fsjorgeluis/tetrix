@@ -42,7 +42,7 @@ func SetupGame() *GameDependencies {
 	}
 	spawner := usecase.NewDefaultSpawner()
 
-	gameService, err := usecase.NewGameService(board.Width, board.Height, spawner, sound)
+	gameService, err := usecase.NewGameService(board, spawner, sound)
 	if err != nil {
 		log.Fatalf("failed to init game service: %v", err)
 	}

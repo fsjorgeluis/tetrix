@@ -17,17 +17,12 @@ type GameService struct {
 }
 
 func NewGameService(
-	boardWidth, boardHeight int,
+	board *domain.Board,
 	spawner PieceSpawner,
 	sound *infrastructure.SoundPlayer,
 ) (*GameService, error) {
 	if spawner == nil {
 		spawner = NewDefaultSpawner()
-	}
-
-	board, err := domain.NewBoard(boardWidth, boardHeight)
-	if err != nil {
-		return nil, err
 	}
 
 	gs := &GameService{
@@ -81,6 +76,7 @@ func (gs *GameService) Tick() {
 	hitBottom := Tick(gs.board, gs.currentPiece)
 	if hitBottom {
 		_ = gs.spawnNextPiece()
+		gs.board.SavePiece(*gs.currentPiece)
 		go gs.sound.PlayEffect("assets/sounds/shot.mp3")
 	}
 }

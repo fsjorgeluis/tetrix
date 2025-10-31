@@ -21,43 +21,57 @@ func NewTCellRenderer() (*TCellRenderer, error) {
 	return &TCellRenderer{screen: s}, nil
 }
 
-func (r *TCellRenderer) Render(board *domain.Board, piece *domain.Piece) {
+func (r *TCellRenderer) Begin(board *domain.Board) {
 	r.Clear()
 
 	width, height := board.Width, board.Height
 
 	// dibujar bordes
-	for y := 0; y < height; y++ {
+	for y := range height {
 		r.drawEmptyCell(0, y)
 		r.drawEmptyCell(width-1, y)
 	}
-	for x := 0; x < width; x++ {
+	for x := range width {
 		r.drawEmptyCell(x, 0)
 		r.drawEmptyCell(x, height)
 	}
 
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
+	for y := range height {
+		for x := range width {
 			if board.Cells[y][x] != domain.Empty {
 				r.drawBlock(x, y)
 			}
 		}
 	}
+}
 
-	if piece != nil {
-		for dy, row := range piece.Shape {
-			for dx, c := range row {
-				if c == domain.Block {
-					screenX := piece.Pos.X + dx
-					screenY := piece.Pos.Y + dy
-					if screenY >= 0 && screenY < height && screenX >= 0 && screenX < width {
-						r.drawBlock(screenX, screenY)
-					}
+func (r *TCellRenderer) DrawBoard(board *domain.Board) {
+	for _, piece := range board.PlacedPieces {
+		r.DrawPiece(board, &piece)
+	}
+}
+
+func (r *TCellRenderer) DrawPiece(board *domain.Board, piece *domain.Piece) {
+	width, height := board.Width, board.Height
+
+	if piece == nil {
+		return
+	}
+
+	for dy, row := range piece.Shape {
+		for dx, c := range row {
+			if c == domain.Block {
+				screenX := piece.Pos.X + dx
+				screenY := piece.Pos.Y + dy
+				if screenY >= 0 && screenY < height && screenX >= 0 && screenX < width {
+					r.drawBlock(screenX, screenY)
 				}
 			}
 		}
 	}
+}
 
+func (r *TCellRenderer) Flush() {
 	r.screen.Show()
 }
 

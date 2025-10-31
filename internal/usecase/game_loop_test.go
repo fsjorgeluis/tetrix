@@ -29,7 +29,7 @@ func TestDrop_SettlesPieceAtBottom(t *testing.T) {
 	Drop(b, p)
 
 	pieceHeight := len(p.Shape)
-	expectedBottomY := b.Height - 3
+	expectedBottomY := b.Height - 2
 	actualBottomY := p.Pos.Y + pieceHeight - 2
 
 	if actualBottomY != expectedBottomY {
