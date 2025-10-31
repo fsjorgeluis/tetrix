@@ -43,20 +43,16 @@ func main() {
 		}
 
 		deps.Renderer.Begin(deps.Board, deps.GameService.Score())
-		deps.Renderer.DrawPiece(deps.Board, deps.GameService.CurrentPiece())
 		deps.Renderer.DrawBoard(deps.Board)
+		deps.Renderer.DrawNextPiece(deps.GameService.NextPiece(), deps.Board.Width+2, 2)
+
 		if deps.GameService.IsGameOver() {
 			deps.Renderer.DrawLabel((deps.Board.Width/2)+1, deps.Board.Height+2, "GAME OVER! Press 'R' to retry")
+		} else {
+			deps.Renderer.DrawPiece(deps.Board, deps.GameService.CurrentPiece())
 		}
-		deps.Renderer.DrawNextPiece(deps.GameService.NextPiece(), deps.Board.Width+2, 2)
+
 		deps.Renderer.Flush()
-
-		//if deps.GameService.IsGameOver() {
-		//	gameOver = true
-		//}
-
 		time.Sleep(10 * time.Millisecond)
 	}
-
-	//log.Println("Game Over!")
 }
