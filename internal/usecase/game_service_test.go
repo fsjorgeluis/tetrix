@@ -75,3 +75,23 @@ func TestGameService_MoveAndDrop(t *testing.T) {
 		t.Errorf("game should not be over right after drop")
 	}
 }
+
+func TestScoreIncrement(t *testing.T) {
+	board, _ := domain.NewBoard(10, 20)
+	gs, _ := NewGameService(board, nil, nil)
+
+	for x := 0; x < board.Width; x++ {
+		board.Cells[19][x] = domain.Block
+	}
+
+	linesCleared := board.ClearFullLines()
+	if linesCleared != 1 {
+		t.Errorf("expected 1 line cleared, got %d", linesCleared)
+	}
+
+	gs.score += linesCleared
+
+	if gs.Score() != 1 {
+		t.Errorf("expected score 1, got %d", gs.Score())
+	}
+}

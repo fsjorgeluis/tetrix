@@ -13,7 +13,6 @@ func Tick(b *domain.Board, current *domain.Piece) bool {
 	if b.IsCollision(*current) {
 		current.Pos = current.Pos.MoveUp()
 		_ = b.Merge(current)
-		_ = b.ClearFullLines()
 		return true
 	}
 	return false

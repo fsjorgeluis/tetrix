@@ -38,7 +38,7 @@ func main() {
 			}
 		}
 
-		deps.Renderer.Begin(deps.Board)
+		deps.Renderer.Begin(deps.Board, deps.GameService.Score())
 		deps.Renderer.DrawPiece(deps.Board, deps.GameService.CurrentPiece())
 		deps.Renderer.DrawBoard(deps.Board)
 		deps.Renderer.Flush()

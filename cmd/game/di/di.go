@@ -27,6 +27,17 @@ func SetupGame() *GameDependencies {
 	}
 
 	sound := infrastructure.NewSoundPlayer()
+	preloadFiles := []string{
+		"assets/sounds/shot.mp3",
+		"assets/sounds/line_clear.mp3",
+	}
+	for _, file := range preloadFiles {
+		if err := sound.Preload(file); err != nil {
+			log.Printf("failed to preload sound %s: %v", file, err)
+		}
+	}
+
+	// background music
 	sound.PlayMusic("assets/sounds/t_sound.mp3")
 
 	inputHandler := infrastructure.NewTCellInput(renderer.Screen())
@@ -67,5 +78,8 @@ func (d *GameDependencies) Close() {
 	}
 	if d.Timer != nil {
 		d.Timer.Stop()
+	}
+	if d.Sound != nil {
+		d.Sound.Close()
 	}
 }

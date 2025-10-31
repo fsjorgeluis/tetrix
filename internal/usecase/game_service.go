@@ -77,7 +77,17 @@ func (gs *GameService) Tick() {
 	if hitBottom {
 		_ = gs.spawnNextPiece()
 		gs.board.SavePiece(*gs.currentPiece)
-		go gs.sound.PlayEffect("assets/sounds/shot.mp3")
+		linesCleared := gs.board.ClearFullLines()
+		if linesCleared > 0 {
+			gs.score += linesCleared
+			if gs.sound != nil {
+				go gs.sound.PlayEffect("assets/sounds/line_clear.mp3")
+			}
+		}
+		if gs.sound != nil {
+			go gs.sound.PlayEffect("assets/sounds/shot.mp3")
+
+		}
 	}
 }
 

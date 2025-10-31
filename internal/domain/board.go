@@ -1,6 +1,8 @@
 package domain
 
-import "errors"
+import (
+	"errors"
+)
 
 // Cell represents if a matrix cell is blocked,
 // maybe an alternative should be use bool instead
@@ -33,9 +35,9 @@ func NewBoard(width, height int) (*Board, error) {
 		}
 	}
 	return &Board{
-		Width:  width,
-		Height: height,
-		Cells:  c,
+		Width:        width,
+		Height:       height,
+		Cells:        c,
 		PlacedPieces: []Piece{},
 	}, nil
 }
@@ -68,7 +70,7 @@ func (b *Board) SetCell(x, y int, val Cell) error {
 // IsEmpty checks if the cell at (x,y) is empty
 // if the position is out of bounds, returns false not empty, useful for collisions
 func (b *Board) IsEmpty(x, y int) bool {
-	if x <= 0 || x >= b.Width-1 {
+	if x < 0 || x >= b.Width {
 		return false
 	}
 	if y >= b.Height {
@@ -121,17 +123,9 @@ func (b *Board) Merge(p *Piece) error {
 		return errors.New("cannot merge piece: collision or out of bounds")
 	}
 	for _, pos := range p.OccupiedCells() {
-		if pos.Y >= 0 && pos.Y < b.Height {
+		if pos.Y >= 0 && pos.Y < b.Height && pos.X >= 0 && pos.X < b.Width {
 			b.Cells[pos.Y][pos.X] = Block
 		}
-		//if pos.Y >= 0 && pos.Y < b.Height {
-		//	if pos.X >= 0 && pos.X < b.Width {
-		//		b.Cells[pos.Y][pos.X] = Block
-		//	}
-		//}
-		//if pos.Y >= 0 && pos.Y < b.Height && pos.X > 0 && pos.X < b.Width-1 {
-		//	b.Cells[pos.Y][pos.X] = Block
-		//}
 	}
 	return nil
 }
@@ -140,12 +134,12 @@ func (b *Board) Merge(p *Piece) error {
 // ClearFullLines detects and clears full rows on the board,
 // returns the number of cleared rows
 func (b *Board) ClearFullLines() int {
-	newRows := make([][]Cell, 0, b.Height)
 	cleared := 0
+	writeRow := b.Height - 1
 
-	for y := 0; y < b.Height; y++ {
+	for y := b.Height - 1; y >= 0; y-- {
 		full := true
-		for x := 0; x < b.Width-1; x++ {
+		for x := 0; x < b.Width; x++ {
 			if b.Cells[y][x] == Empty {
 				full = false
 				break
@@ -155,25 +149,19 @@ func (b *Board) ClearFullLines() int {
 			cleared++
 			continue
 		}
-		rowCopy := make([]Cell, b.Width)
-		copy(rowCopy, b.Cells[y])
-		newRows = append(newRows, rowCopy)
+		copy(b.Cells[writeRow], b.Cells[y])
+		writeRow--
 	}
 
 	// empty rows at the top
-	for i := 0; i < cleared; i++ {
-		empty := make([]Cell, b.Width)
+	for y := writeRow; y >= 0; y-- {
 		for x := 0; x < b.Width; x++ {
-			empty[x] = Empty
+			b.Cells[y][x] = Empty
 		}
-		// insert empty row at top
-		newRows = append([][]Cell{empty}, newRows...)
 	}
 	// if rows are not cleared, avoid reassigning to prevent unnecessary garbage collection
 	if cleared > 0 {
-		for y := 0; y < b.Height; y++ {
-			copy(b.Cells[y], newRows[y])
-		}
+		//log.Printf("Cleared %d line(s)", cleared)
 	}
 	return cleared
 }
