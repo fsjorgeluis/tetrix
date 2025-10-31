@@ -1,10 +1,15 @@
 package usecase
 
-import "testing"
+
+import (
+	"github.com/fsjorgeluis/tetrix/infrastructure"
+	"testing"
+)
 
 func TestNewGameService_InitialState(t *testing.T) {
 	spawner := NewDefaultSpawner()
-	game, err := NewGameService(10, 20, spawner)
+	sound_player := infrastructure.NewSoundPlayer()
+	game, err := NewGameService(10, 20, spawner, sound_player)
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}
@@ -22,7 +27,8 @@ func TestNewGameService_InitialState(t *testing.T) {
 }
 
 func TestGameService_TickAndSpawn(t *testing.T) {
-	game, _ := NewGameService(10, 20, NewDefaultSpawner())
+	sound_player := infrastructure.NewSoundPlayer()
+	game, _ := NewGameService(10, 20, NewDefaultSpawner(), sound_player)
 
 	initialBoard := game.GetBoard()
 	game.Tick()
@@ -43,7 +49,8 @@ func TestGameService_TickAndSpawn(t *testing.T) {
 }
 
 func TestGameService_MoveAndDrop(t *testing.T) {
-	game, _ := NewGameService(10, 20, NewDefaultSpawner())
+	sound_player := infrastructure.NewSoundPlayer()
+	game, _ := NewGameService(10, 20, NewDefaultSpawner(), sound_player)
 
 	game.MoveLeft()
 	game.MoveRight()
