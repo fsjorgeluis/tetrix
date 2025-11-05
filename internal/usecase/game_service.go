@@ -15,6 +15,7 @@ type GameService struct {
 	score        int
 	level        int
 	gameOver     bool
+	paused       bool
 	sound        *infrastructure.SoundPlayer
 }
 
@@ -79,9 +80,18 @@ func (gs *GameService) NextPiece() *domain.Piece {
 	return gs.nextPiece
 }
 
+func (gs *GameService) TogglePause() {
+	gs.paused = !gs.paused
+	// TODO: try to pause music
+}
+
+func (gs *GameService) Paused() bool {
+	return gs.paused
+}
+
 // Tick advances the game state by one tick.
 func (gs *GameService) Tick() {
-	if gs.gameOver || gs.currentPiece == nil {
+	if gs.gameOver || gs.currentPiece == nil || gs.paused {
 		return
 	}
 	hitBottom := Tick(gs.board, gs.currentPiece)

@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"fmt"
 
+	_interface "github.com/fsjorgeluis/tetrix/interface"
 	"github.com/fsjorgeluis/tetrix/internal/domain"
 	"github.com/gdamore/tcell/v2"
 )
@@ -98,9 +99,18 @@ func (r *TCellRenderer) DrawScore(score, boardWidth int) {
 	}
 }
 
-func (r *TCellRenderer) DrawLabel(x, y int, text string) {
-	for i, ch := range text {
-		r.Screen().SetContent(x+i, y, ch, nil, tcell.StyleDefault.Foreground(tcell.ColorRed))
+func (r *TCellRenderer) DrawLabel(label *_interface.GameLabel) {
+	textColor := tcell.ColorWhite
+	switch label.Color {
+	case "red":
+		textColor = tcell.ColorRed
+	case "yellow":
+		textColor = tcell.ColorYellow
+	case "green":
+		textColor = tcell.ColorGreen
+	}
+	for i, ch := range label.Text {
+		r.Screen().SetContent(label.X+i, label.Y, ch, nil, tcell.StyleDefault.Foreground(textColor))
 	}
 }
 

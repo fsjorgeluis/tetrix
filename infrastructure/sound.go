@@ -95,31 +95,6 @@ func (s *SoundPlayer) PlayMusic(path string) {
 	}()
 }
 
-//func (s *SoundPlayer) PlayMusic(path string) {
-//	go func() {
-//		fullPath := assetPath(path)
-//		f, err := os.Open(fullPath)
-//		if err != nil {
-//			log.Printf("error opening music: %v", err)
-//			return
-//		}
-//		defer f.Close()
-//
-//		streamer, format, err := mp3.Decode(f)
-//		if err != nil {
-//			log.Printf("error decoding music: %v", err)
-//			return
-//		}
-//		s.Init(format.SampleRate)
-//
-//		// loop infinito
-//		speaker.Play(beep.Loop(-1, streamer))
-//
-//		// keeps the goroutine alive
-//		select {}
-//	}()
-//}
-
 func (s *SoundPlayer) PlayEffect(path string) {
 	s.mu.RLock()
 	cached := s.cache[path]
@@ -150,34 +125,6 @@ func (s *SoundPlayer) PlayEffect(path string) {
 		<-done
 	}()
 }
-
-//
-//func (s *SoundPlayer) PlayEffect(path string) {
-//	go func() {
-//		fullPath := assetPath(path)
-//		f, err := os.Open(fullPath)
-//		if err != nil {
-//			log.Printf("error opening effect: %v", err)
-//			return
-//		}
-//		defer f.Close()
-//
-//		streamer, format, err := mp3.Decode(f)
-//		if err != nil {
-//			log.Printf("error decoding effect: %v", err)
-//			return
-//		}
-//		defer streamer.Close()
-//
-//		s.Init(format.SampleRate)
-//
-//		done := make(chan struct{})
-//		speaker.Play(beep.Seq(streamer, beep.Callback(func() {
-//			close(done)
-//		})))
-//		<-done
-//	}()
-//}
 
 func (s *SoundPlayer) Close() {
 	s.mu.Lock()

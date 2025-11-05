@@ -58,7 +58,9 @@ func (i *TCellInput) eventToAction(ev tcell.Event) _interface.InputAction {
 			return _interface.RotateCW
 		case tcell.KeyDown:
 			return _interface.SoftDrop
-		case tcell.KeyCtrlC, tcell.KeyEscape:
+		case tcell.KeyEscape:
+			return _interface.Pause
+		case tcell.KeyCtrlC:
 			return _interface.Quit
 		default:
 			switch tev.Rune() {

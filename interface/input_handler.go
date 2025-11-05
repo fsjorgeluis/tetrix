@@ -12,6 +12,7 @@ const (
 	Quit
 	NoAction
 	Restart
+	Pause
 )
 
 type InputHandler interface {
